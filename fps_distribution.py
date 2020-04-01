@@ -87,13 +87,14 @@ class fps_deviation():
             bufdf=self.df2[self.df2< self.MAX_OF_FPS]
             plt.hist(bufdf, range=(0,self.MAX_OF_FPS), bins=self.BINS, density=True, alpha=0.5, label=self.filename)
             plt.plot(x, gaussian(x,bufdf.mean(), bufdf.std()))
+            plt.annotate(round(bufdf.mean(),2), xy = (round(bufdf.mean()), 0), xytext = (round(bufdf.mean()), -0.004),size = 18, color = plt.rcParams["axes.prop_cycle"].by_key()["color"][0], arrowprops = dict(color = plt.rcParams["axes.prop_cycle"].by_key()["color"][0]))
             #bufdf3=self.df3[self.df3< np.log(self.MAX_OF_FPS)]
             #plt.plot(x, log_normal_distribution(x,bufdf3.mean(), bufdf3.std()))
         plt.xlabel("FPS", labelpad = 40)
         plt.ylabel("Probability")
         plt.legend(fontsize=14)
         savename = figname(self.filename)
-        #fig.savefig(savename+".png", dpi = 256, facecolor = "white", bbox_inches = "tight")
+        fig.savefig(savename+".png", dpi = 256, facecolor = "white", bbox_inches = "tight")
         plt.show()
 
     def data_print(self):
