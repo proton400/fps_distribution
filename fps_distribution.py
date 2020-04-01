@@ -7,6 +7,14 @@ import csv
 import matplotlib.pyplot as plt
 import os, tkinter, tkinter.filedialog,tkinter.messagebox
 
+plt.rcParams['font.family']='sans-serif'#使用するフォント
+plt.rcParams['xtick.direction']='in'#メモリ内向き('in')外向き('out')双方向('inout')
+plt.rcParams['ytick.direction']='in'
+plt.rcParams['xtick.major.width'] = 1.0#メモリ線の線幅
+plt.rcParams['ytick.major.width'] = 1.0
+plt.rcParams['font.size'] = 20#フォントの太さ
+plt.rcParams['axes.linewidth'] = 1.0#囲みの太さ
+
 def filename():
     root = tkinter.Tk()
     root.withdraw()
@@ -31,6 +39,12 @@ def gaussian(x,mean,std):
 
 def log_normal_distribution(x,mean,std):
     return 1/(np.sqrt(2*np.pi)*std*x)*np.exp(-(np.log(x)-mean)**2/(2*std**2))
+
+def figname(filelist):
+    savename = str()
+    for i in filelist:
+        savename = savename+"_"+i[:-4]
+    return savename
 
 class fps_deviation():
     def __init__(self):
@@ -59,26 +73,29 @@ class fps_deviation():
         self.df2 = self.df2.replace(0,self.PSEUDO_ZERO)
         self.df3 = self.df2.apply(g)#df3 contains log(FPS)
     def plot_deviation(self):
+        fig = plt.figure()
         x = np.linspace(0.1,300,3000)
         if len(self.filename)>=2:
             for i in range(len(self.filename)):
                 bufdf=self.df2[self.df2[self.filename[i]] < self.MAX_OF_FPS]
-                plt.hist(bufdf[self.filename[i]], range=(0,self.MAX_OF_FPS), bins=self.BINS, density=True, alpha=0.5, label=self.filename[i])
+                plt.hist(bufdf[self.filename[i]], range=(0,self.MAX_OF_FPS), bins=self.BINS, density=True, alpha=0.45, label=self.filename[i])
                 plt.plot(x, gaussian(x,bufdf[self.filename[i]].mean(), bufdf[self.filename[i]].std()))
-                plt.annotate(round(bufdf[self.filename[i]].mean(),2), xy = (round(bufdf[self.filename[i]].mean()), 0), xytext = (round(bufdf[self.filename[i]].mean()), -0.002-0.001*i),size = 12, color = plt.rcParams["axes.prop_cycle"].by_key()["color"][i*2], arrowprops = dict(color = plt.rcParams["axes.prop_cycle"].by_key()["color"][i*2]))
+                plt.annotate(round(bufdf[self.filename[i]].mean(),2), xy = (round(bufdf[self.filename[i]].mean()), 0), xytext = (round(bufdf[self.filename[i]].mean()), -0.004-0.002*i),size = 18, color = plt.rcParams["axes.prop_cycle"].by_key()["color"][i*2], arrowprops = dict(color = plt.rcParams["axes.prop_cycle"].by_key()["color"][i*2]))
                 #bufdf3=self.df3[self.df3[self.filename[i]] < np.log(self.MAX_OF_FPS)]
                 #plt.plot(x, log_normal_distribution(x,bufdf3[self.filename[i]].mean(), bufdf3[self.filename[i]].std()))              
-                    
         else:
             bufdf=self.df2[self.df2< self.MAX_OF_FPS]
             plt.hist(bufdf, range=(0,self.MAX_OF_FPS), bins=self.BINS, density=True, alpha=0.5, label=self.filename)
             plt.plot(x, gaussian(x,bufdf.mean(), bufdf.std()))
             #bufdf3=self.df3[self.df3< np.log(self.MAX_OF_FPS)]
             #plt.plot(x, log_normal_distribution(x,bufdf3.mean(), bufdf3.std()))
-        plt.xlabel("FPS")
+        plt.xlabel("FPS", labelpad = 40)
         plt.ylabel("Probability")
-        plt.legend()
+        plt.legend(fontsize=14)
+        savename = figname(self.filename)
+        fig.savefig(savename+".png", dpi = 256, facecolor = "white", bbox_inches = "tight")
         plt.show()
+
     def data_print(self):
         if len(self.filename)>=2:
             for i in range(len(self.filename)):
