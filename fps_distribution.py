@@ -93,7 +93,7 @@ class fps_deviation():
         plt.ylabel("Probability")
         plt.legend(fontsize=14)
         savename = figname(self.filename)
-        fig.savefig(savename+".png", dpi = 256, facecolor = "white", bbox_inches = "tight")
+        #fig.savefig(savename+".png", dpi = 256, facecolor = "white", bbox_inches = "tight")
         plt.show()
 
     def data_print(self):
