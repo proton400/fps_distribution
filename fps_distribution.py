@@ -65,6 +65,7 @@ class fps_deviation():
                 bufdf=self.df2[self.df2[self.filename[i]] < self.MAX_OF_FPS]
                 plt.hist(bufdf[self.filename[i]], range=(0,self.MAX_OF_FPS), bins=self.BINS, density=True, alpha=0.5, label=self.filename[i])
                 plt.plot(x, gaussian(x,bufdf[self.filename[i]].mean(), bufdf[self.filename[i]].std()))
+                plt.annotate(round(bufdf[self.filename[i]].mean(),2), xy = (round(bufdf[self.filename[i]].mean()), 0), xytext = (round(bufdf[self.filename[i]].mean()), -0.003),size = 12, color = plt.rcParams["axes.prop_cycle"].by_key()["color"][i*2], arrowprops = dict(color = plt.rcParams["axes.prop_cycle"].by_key()["color"][i*2]))
                 #bufdf3=self.df3[self.df3[self.filename[i]] < np.log(self.MAX_OF_FPS)]
                 #plt.plot(x, log_normal_distribution(x,bufdf3[self.filename[i]].mean(), bufdf3[self.filename[i]].std()))              
                     
